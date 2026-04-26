@@ -1,0 +1,48 @@
+Package: yolor
+Type: Package
+Title: YOLO Object Detection from ShinyLabel Annotations
+Version: 0.3.0
+Authors@R: person("Lalit", "GIS", email = "your@email.com", role = c("aut", "cre"))
+Description: An R-native interface for YOLO object detection that integrates
+    directly with ShinyLabel annotation exports. Provides functions to read
+    ShinyLabel SQLite databases and CSV exports, manage YOLO-format datasets,
+    run inference using YOLO models via reticulate (Ultralytics), compute
+    comprehensive accuracy metrics (mAP, precision, recall, F1, AP per class,
+    confusion matrix, PR curves, F1-confidence curves), visualise all metrics,
+    and export results to CSV, JSON, PNG, and HTML reports.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports:
+    DBI,
+    RSQLite,
+    reticulate,
+    magick,
+    ggplot2,
+    dplyr,
+    tidyr,
+    jsonlite,
+    yaml,
+    fs,
+    cli,
+    rlang,
+    glue,
+    tibble,
+    scales
+Suggests:
+    readr,
+    torch,
+    torchvision,
+    purrr,
+    patchwork,
+    base64enc,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    covr
+VignetteBuilder: knitr
+URL: https://github.com/Lalitgis/yolor, https://lalitgis.github.io/yolor/
+BugReports: https://github.com/Lalitgis/yolor/issues
+Config/testthat/edition: 3

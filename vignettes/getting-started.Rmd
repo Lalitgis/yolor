@@ -1,0 +1,214 @@
+---
+title: "Getting Started with yolor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with yolor}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  eval     = FALSE
+)
+```
+
+## Overview
+
+`yolor` is the training and inference companion to the
+[ShinyLabel](https://github.com/Lalitgis/ShinyLabel) image annotation tool.
+Together they form a fully R-native YOLO pipeline:
+
+```
+ShinyLabel  →  annotate images, save to SQLite
+yolor       →  read DB, export dataset, train, detect, evaluate
+```
+
+---
+
+## 1. Install & Setup
+
+```{r install}
+# Install yolor from GitHub
+devtools::install_github("Lalitgis/yolor")
+
+# Install the Python backend (Ultralytics + PyTorch)
+library(yolor)
+yolo_setup()   # creates a 'yolor' virtualenv and installs ultralytics
+```
+
+After `yolo_setup()`, restart R and activate the environment:
+
+```{r activate}
+reticulate::use_virtualenv("yolor")
+library(yolor)
+```
+
+---
+
+## 2. Annotate Images with ShinyLabel
+
+```{r annotate}
+library(shinylabel)
+
+run_shinylabel(db_path = "my_project.db")
+# → Opens the annotation UI in your browser
+# → Draw bounding boxes, assign classes, mark images "done"
+```
+
+---
+
+## 3. Read the ShinyLabel Database
+
+```{r read}
+ds <- sl_read_db("my_project.db")
+print(ds)
+
+# Check class distribution
+sl_class_summary(ds)
+
+# Plot annotation counts per class
+plot(ds)
+```
+
+---
+
+## 4. Export to YOLO Dataset
+
+```{r export}
+sl_export_dataset(
+  ds,
+  output_dir = "yolo_dataset/",
+  val_split  = 0.2,    # 20% validation
+  seed       = 42
+)
+
+# Validate the exported dataset
+yolo_validate_dataset("yolo_dataset/")
+```
+
+This creates:
+
+```
+yolo_dataset/
+├── data.yaml
+├── images/
+│   ├── train/
+│   └── val/
+└── labels/
+    ├── train/
+    └── val/
+```
+
+---
+
+## 5. Load a YOLO Model
+
+```{r model}
+# See available pre-trained sizes
+yolo_available_models()
+
+# Load nano model (auto-downloads weights on first use)
+model <- yolo_model("yolov8n")
+
+# Or load your own weights
+model <- yolo_model("path/to/weights.pt")
+```
+
+---
+
+## 6. Train
+
+```{r train}
+result <- yolo_train(
+  model,
+  data    = "yolo_dataset/data.yaml",
+  epochs  = 100,
+  imgsz   = 640,
+  batch   = 16
+)
+
+print(result)
+# Best weights are at: result$best_weights
+```
+
+Training results (loss curves, confusion matrix, etc.) are saved in `runs/detect/train/`.
+
+---
+
+## 7. Detect Objects in New Images
+
+```{r detect}
+# Load best trained model
+trained_model <- yolo_model(result$best_weights)
+
+# Run on a directory
+detections <- yolo_detect(
+  trained_model,
+  images = "new_photos/",
+  conf   = 0.4
+)
+
+print(detections)
+
+# Visualise on a specific image
+plot(detections, image = "new_photos/img001.jpg")
+
+# Export all detections to CSV
+yolo_export_csv(detections, "detections.csv")
+
+# Export to GeoJSON (for GIS / satellite imagery workflows)
+yolo_export_geojson(detections, "detections.geojson")
+```
+
+---
+
+## 8. Evaluate Model Performance
+
+```{r eval}
+bench <- yolo_benchmark(
+  trained_model,
+  data = "yolo_dataset/data.yaml"
+)
+
+print(bench)
+plot(bench)   # per-class mAP bar chart
+```
+
+---
+
+## Tips
+
+| Situation | Recommendation |
+|-----------|----------------|
+| < 100 images | Use `"yolov8n"`, `epochs = 50`, `batch = 8` |
+| 100–1000 images | `"yolov8s"` or `"yolov8m"`, `epochs = 100` |
+| GPU available | Set `device = "cuda"` in `yolo_model()` and `yolo_train()` |
+| Apple Silicon | Set `device = "mps"` |
+| Low mAP | Increase `epochs`, check class balance with `sl_class_summary()` |
+| Slow training | Reduce `imgsz` to `320` or set `cache = TRUE` |
+
+---
+
+## Full Minimal Example
+
+```{r full}
+library(yolor)
+reticulate::use_virtualenv("yolor")
+
+# Read ShinyLabel DB
+ds <- sl_read_db("project.db")
+
+# Export YOLO dataset
+sl_export_dataset(ds, "dataset/", val_split = 0.2)
+
+# Train
+model  <- yolo_model("yolov8n")
+result <- yolo_train(model, data = "dataset/data.yaml", epochs = 50)
+
+# Detect
+preds <- yolo_detect(result, images = "test_images/", conf = 0.3)
+plot(preds)
+```

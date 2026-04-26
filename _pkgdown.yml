@@ -1,0 +1,84 @@
+url: https://lalitgis.github.io/yolor/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: "yolor — YOLO Object Detection in R"
+  description: >
+    R-native YOLO object detection that integrates directly with
+    ShinyLabel annotations. Train, detect, and evaluate — without leaving R.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/Lalitgis/yolor
+
+reference:
+  - title: "ShinyLabel integration"
+    desc: "Read annotations from ShinyLabel and export to YOLO format."
+    contents:
+      - sl_read_db
+      - sl_read_csv
+      - sl_export_dataset
+      - sl_class_summary
+      - plot.shinylabel_dataset
+
+  - title: "YOLO models"
+    desc: "Load, set up, and inspect YOLO model weights."
+    contents:
+      - yolo_model
+      - yolo_setup
+      - yolo_available_models
+      - print.yolo_model
+
+  - title: "Training"
+    desc: "Fine-tune YOLO on your labeled dataset."
+    contents:
+      - yolo_train
+      - yolo_resume
+      - print.yolo_train_result
+
+  - title: "Detection (inference)"
+    desc: "Run YOLO on new images and work with results."
+    contents:
+      - yolo_detect
+      - print.yolo_results
+      - plot.yolo_results
+      - as_tibble.yolo_results
+
+  - title: "Evaluation"
+    desc: "Measure model performance with mAP and related metrics."
+    contents:
+      - yolo_benchmark
+      - print.yolo_benchmark
+      - plot.yolo_benchmark
+
+  - title: "Utilities"
+    desc: "Export, visualise, and validate."
+    contents:
+      - yolo_export_csv
+      - yolo_export_geojson
+      - yolo_draw_boxes
+      - yolo_validate_dataset
+
+articles:
+  - title: "Getting started"
+    navbar: ~
+    contents:
+      - getting-started
+
+  - title: "Accuracy Metrics"
+    desc: "Compute, visualise, and export full detection accuracy metrics."
+    contents:
+      - yolo_metrics
+      - metrics_from_predictions
+      - print.yolo_metrics
+      - plot.yolo_metrics
+      - metrics_export
+      - metrics_compare
