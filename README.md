@@ -1,4 +1,4 @@
-# yoloR <img src="logo.png" align="right" height="90"/>
+# YOLO-R <img src="logo.png" align="right" height="90"/>
 
 ### **R-Native YOLO Object Detection**
 
