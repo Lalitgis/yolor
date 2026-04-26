@@ -2,7 +2,7 @@ Package: yolor
 Type: Package
 Title: YOLO Object Detection from ShinyLabel Annotations
 Version: 0.3.0
-Authors@R: person("Lalit", "GIS", email = "your@email.com", role = c("aut", "cre"))
+Authors@R: person("Lalit", "BC", email = "lalitiaas@gmail.com", role = c("aut", "cre"))
 Description: An R-native interface for YOLO object detection that integrates
     directly with ShinyLabel annotation exports. Provides functions to read
     ShinyLabel SQLite databases and CSV exports, manage YOLO-format datasets,
