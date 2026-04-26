@@ -1,8 +1,15 @@
-# YOLO-R <img src="logo.png" align="right" height="90"/>
+# YOLO-R 
 
 ### **R-Native YOLO Object Detection**
 
 *The inference companion to ShinyLabel*
+
+<p align="center">
+  <img src="icon.png" alt="hovR logo" width="180"/>
+</p>
+
+<h1 align="center">YOLO-R</h1>
+<p align="center">Package for the YOLO based object detection in R</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![R](https://img.shields.io/badge/R-%3E%3D4.1-blue.svg)](https://cran.r-project.org/)
