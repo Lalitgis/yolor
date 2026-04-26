@@ -95,3 +95,36 @@ Side-by-side grouped bar chart + delta table showing which model wins on each me
 ## Other changes
 - `tidyr` and `scales` moved from Suggests → Imports
 - `patchwork` and `base64enc` added to Suggests
+
+---
+
+# yolor 0.4.0
+
+## New module: Roboflow Integration
+
+### `rf_load_yolo()` — YOLOv8 PyTorch export (zero conversion)
+Point directly at an unzipped Roboflow YOLOv8 export. Automatically
+renames `valid/` → `val/` and patches `data.yaml` for Ultralytics
+compatibility. Returns the `data.yaml` path ready for `yolo_train()`.
+
+### `rf_coco_to_yolo()` — COCO JSON export conversion
+Converts Roboflow COCO JSON exports (with `_annotations.coco.json` per
+split) to YOLO `.txt` + `data.yaml` layout. Handles 1-based COCO
+category IDs, pixel-space `[x,y,w,h]` bbox format, and multi-split
+exports in one call.
+
+### `rf_read_csv()` — CSV export
+Reads Roboflow CSV exports (`img_fName`, `img_w`, `img_h`,
+`class_label`, `bbx_xtl`, `bbx_ytl`, `bbx_xbr`, `bbx_ybr`) into a
+`shinylabel_dataset` object. Normalised coords computed from the
+bundled `img_w`/`img_h` columns — no extra magick calls needed.
+Automatically forwards standard-format CSVs to `sl_read_csv()`.
+
+### `rf_download()` — Direct API download
+Downloads any Roboflow dataset version via the public API using your
+API key. Unzips automatically and calls `rf_load_yolo()` for
+`yolov8` format exports.
+
+### `rf_summary()` — Quick dataset overview
+Reads `data.yaml` and counts images/labels/boxes per split without
+loading the full dataset.
